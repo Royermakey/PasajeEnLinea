@@ -1,0 +1,955 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pasaje en Línea</title>
+
+<style>
+:root {
+  --fondo: #f1f5f9;
+  --azul: #102b46;
+  --primario: #2563eb;
+  --verde: #0e9f6e;
+  --blanco: #ffffff;
+  --texto: #1e293b;
+  --gris: #64748b;
+  --borde: #dbe3ed;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+header {
+  background: linear-gradient(120deg, #102b46, #205078);
+  color: white;
+  padding: 22px;
+}
+
+.cabecera {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icono {
+  background: #41d6cf;
+  color: #102b46;
+  padding: 13px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 23px;
+}
+
+h1 { margin: 0; font-size: 25px; }
+header p { margin: 5px 0 0; color: #d5e8f5; }
+
+.etiqueta {
+  border: 1px solid #91b9d7;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+main {
+  max-width: 1100px;
+  margin: 25px auto;
+  padding: 0 16px;
+}
+
+h2 { margin-bottom: 8px; }
+
+.intro {
+  color: var(--gris);
+  line-height: 1.6;
+}
+
+.nota {
+  background: #e0f2fe;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 20px 0;
+}
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+button {
+  cursor: pointer;
+  font-size: 14px;
+  border: none;
+  border-radius: 9px;
+  padding: 12px 16px;
+  font-weight: bold;
+}
+
+.menu button {
+  background: white;
+  color: var(--azul);
+  border: 1px solid var(--borde);
+}
+
+.menu button.activo,
+.btn {
+  background: var(--primario);
+  color: white;
+}
+
+.contenedor {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 15px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 18px #102b4609;
+}
+
+.panel h3 { margin-top: 0; }
+
+.campo {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 7px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: white;
+  color: var(--texto);
+}
+
+input:focus, select:focus {
+  outline: 2px solid #bfdbfe;
+  border-color: var(--primario);
+}
+
+.filas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.secundario {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.verde {
+  background: var(--verde);
+  color: white;
+}
+
+.rojo {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ruta {
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 13px;
+  margin-bottom: 10px;
+  line-height: 1.7;
+}
+
+.ruta strong { color: var(--azul); }
+
+.ruta p {
+  font-size: 13px;
+  color: var(--gris);
+  margin: 5px 0 0;
+}
+
+.lista {
+  display: grid;
+  gap: 12px;
+}
+
+.reserva {
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 14px;
+  overflow-wrap: anywhere;
+}
+
+.reserva strong {
+  display: block;
+  margin-bottom: 7px;
+}
+
+.detalle {
+  color: var(--gris);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.estado {
+  display: inline-block;
+  margin-top: 8px;
+  border-radius: 20px;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: bold;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.estado.abordo {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.estado.cancelada {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.resumen {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--borde);
+  padding: 12px 0;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.resumen span { color: var(--gris); }
+
+.vacio {
+  color: var(--gris);
+  text-align: center;
+  padding: 25px 10px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.oculto { display: none; }
+
+.estadisticas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.estadistica {
+  background: #f8fafc;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.estadistica strong {
+  display: block;
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.estadistica span {
+  font-size: 11px;
+  color: var(--gris);
+}
+
+.tabla {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px;
+}
+
+th, td {
+  text-align: left;
+  border-bottom: 1px solid var(--borde);
+  padding: 12px 8px;
+  font-size: 12px;
+}
+
+th { color: var(--gris); }
+
+footer {
+  text-align: center;
+  color: var(--gris);
+  padding: 25px 10px;
+  font-size: 12px;
+}
+
+#mensaje {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--azul);
+  color: white;
+  border-radius: 10px;
+  padding: 13px 18px;
+  display: none;
+  max-width: 90%;
+  font-size: 13px;
+}
+
+@media(max-width:750px) {
+  .contenedor { grid-template-columns: 1fr; }
+  .filas { grid-template-columns: 1fr; }
+  .panel { padding: 16px; }
+  .cabecera { align-items: flex-start; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="cabecera">
+    <div class="logo">
+      <div class="icono">P</div>
+      <div>
+        <h1>Pasaje en Línea</h1>
+        <p>Tu viaje comienza aquí</p>
+      </div>
+    </div>
+    <div class="etiqueta">DEMOSTRACIÓN LOCAL</div>
+  </div>
+</header>
+
+<main>
+  <h2>Reservas de transporte</h2>
+  <p class="intro">
+    Reserva tus pasajes entre Sitabamba y Huamachuco
+    de manera sencilla.
+  </p>
+
+  <div class="nota">
+    <strong>Versión de prueba:</strong> los datos se guardan
+    en este navegador. No se envían mensajes reales por WhatsApp
+    ni se generan códigos QR escaneables.
+    Utiliza datos ficticios.
+  </div>
+
+  <nav class="menu">
+    <button class="activo" onclick="mostrarVista('pasajero',this)">
+      Pasajero
+    </button>
+    <button onclick="mostrarVista('chofer',this)">
+      Chofer
+    </button>
+    <button onclick="mostrarVista('admin',this)">
+      Administrador
+    </button>
+  </nav>
+
+  <!-- VISTA PASAJERO -->
+  <section id="pasajero">
+    <div class="contenedor">
+      <div>
+        <div class="panel">
+          <h3>Reservar un pasaje</h3>
+          <p class="intro">Completa tus datos de prueba.</p>
+
+          <form id="formulario">
+            <div class="campo">
+              <label for="nombre">Nombre completo</label>
+              <input id="nombre" maxlength="90"
+                placeholder="Ej. Juan Pérez" required>
+            </div>
+
+            <div class="filas">
+              <div class="campo">
+                <label for="dni">DNI de prueba</label>
+                <input id="dni" maxlength="12"
+                  placeholder="Documento ficticio" required>
+              </div>
+              <div class="campo">
+                <label for="celular">Celular / WhatsApp</label>
+                <input id="celular" maxlength="20"
+                  placeholder="Número ficticio" required>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label for="ruta">Selecciona la ruta</label>
+              <select id="ruta" required>
+                <option value="AB">Sitabamba → Huamachuco</option>
+                <option value="BA">Huamachuco → Sitabamba</option>
+              </select>
+            </div>
+
+            <div class="filas">
+              <div class="campo">
+                <label for="fecha">Fecha de viaje</label>
+                <input type="date" id="fecha" required>
+              </div>
+              <div class="campo">
+                <label for="hora">Hora de salida</label>
+                <select id="hora" required></select>
+              </div>
+            </div>
+
+            <button class="btn" type="submit">
+              Crear reserva
+            </button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h3>Reservas registradas</h3>
+          <div id="misReservas" class="lista"></div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="panel">
+          <h3>Rutas y horarios</h3>
+
+          <div class="ruta">
+            <strong>Sitabamba → Huamachuco</strong>
+            <p>Salida: 2:00 a. m.</p>
+            <p>Salida: 8:00 a. m.</p>
+          </div>
+
+          <div class="ruta">
+            <strong>Huamachuco → Sitabamba</strong>
+            <p>Salida: 2:00 a. m.</p>
+            <p>Salida: 2:00 p. m.</p>
+          </div>
+
+          <div class="resumen">
+            <span>Precio del pasaje</span>
+            <strong>Por configurar</strong>
+          </div>
+
+          <div class="resumen">
+            <span>Código de reserva</span>
+            <strong>Generación automática</strong>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>¿Cómo funciona?</h3>
+          <p class="intro">
+            1. Elige tu ruta.<br><br>
+            2. Selecciona la fecha y hora.<br><br>
+            3. Registra tus datos.<br><br>
+            4. Guarda tu código de reserva.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- VISTA CHOFER -->
+  <section id="chofer" class="oculto">
+    <div class="panel">
+      <h3>Panel del chofer</h3>
+      <p class="intro">
+        Consulta los pasajeros de la ruta y turno seleccionados.
+      </p>
+
+      <div class="filas">
+        <div class="campo">
+          <label for="rutaChofer">Ruta</label>
+          <select id="rutaChofer">
+            <option value="AB">Sitabamba → Huamachuco</option>
+            <option value="BA">Huamachuco → Sitabamba</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="fechaChofer">Fecha del viaje</label>
+          <input type="date" id="fechaChofer">
+        </div>
+
+        <div class="campo">
+          <label for="horaChofer">Turno</label>
+          <select id="horaChofer"></select>
+        </div>
+      </div>
+
+      <div class="estadisticas">
+        <div class="estadistica">
+          <strong id="totalChofer">0</strong>
+          <span>Reservas activas</span>
+        </div>
+        <div class="estadistica">
+          <strong id="subidosChofer">0</strong>
+          <span>Abordaron</span>
+        </div>
+        <div class="estadistica">
+          <strong id="pendientesChofer">0</strong>
+          <span>Pendientes</span>
+        </div>
+      </div>
+
+      <div id="listaChofer" class="lista"></div>
+    </div>
+  </section>
+
+  <!-- VISTA ADMINISTRADOR -->
+  <section id="admin" class="oculto">
+    <div class="panel">
+      <h3>Panel del administrador</h3>
+      <p class="intro">
+        Consulta todas las reservas de esta demostración.
+      </p>
+
+      <div class="estadisticas">
+        <div class="estadistica">
+          <strong id="totalAdmin">0</strong>
+          <span>Total reservas</span>
+        </div>
+        <div class="estadistica">
+          <strong id="pendientesAdmin">0</strong>
+          <span>Reservadas</span>
+        </div>
+        <div class="estadistica">
+          <strong id="subidosAdmin">0</strong>
+          <span>Abordaron</span>
+        </div>
+      </div>
+
+      <button class="btn" onclick="exportarCSV()">
+        Exportar reservas a CSV
+      </button>
+
+      <button class="btn secundario"
+        style="margin-top:10px"
+        onclick="borrarReservas()">
+        Borrar todas las reservas de prueba
+      </button>
+
+      <br><br>
+
+      <div class="tabla">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Pasajero</th>
+              <th>Ruta</th>
+              <th>Fecha y hora</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tablaAdmin"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Pasaje en Línea · Prototipo inicial · No usar para viajes reales
+  </footer>
+</main>
+
+<div id="mensaje"></div>
+
+<script>
+const CLAVE = "pasaje_en_linea_reservas_v1";
+
+const rutas = {
+  AB: {
+    origen: "Sitabamba",
+    destino: "Huamachuco",
+    horas: ["02:00", "08:00"]
+  },
+  BA: {
+    origen: "Huamachuco",
+    destino: "Sitabamba",
+    horas: ["02:00", "14:00"]
+  }
+};
+
+let reservas = cargarReservas();
+
+function cargarReservas() {
+  try {
+    return JSON.parse(localStorage.getItem(CLAVE) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function guardar() {
+  localStorage.setItem(CLAVE, JSON.stringify(reservas));
+  actualizarTodo();
+}
+
+function fechaLocal() {
+  const d = new Date();
+  return d.getFullYear() + "-" +
+    String(d.getMonth() + 1).padStart(2, "0") + "-" +
+    String(d.getDate()).padStart(2, "0");
+}
+
+function horaBonita(hora) {
+  const horas = {
+    "02:00": "2:00 a. m.",
+    "08:00": "8:00 a. m.",
+    "14:00": "2:00 p. m."
+  };
+  return horas[hora] || hora;
+}
+
+function fechaBonita(fecha) {
+  if (!fecha) return "";
+  const partes = fecha.split("-");
+  return partes[2] + "/" + partes[1] + "/" + partes[0];
+}
+
+function textoRuta(codigo) {
+  return rutas[codigo].origen + " → " + rutas[codigo].destino;
+}
+
+function escapar(valor) {
+  return String(valor ?? "").replace(/[&<>"']/g, letra => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[letra]);
+}
+
+function avisar(texto) {
+  const m = document.getElementById("mensaje");
+  m.textContent = texto;
+  m.style.display = "block";
+
+  clearTimeout(window.temporizadorAviso);
+  window.temporizadorAviso = setTimeout(() => {
+    m.style.display = "none";
+  }, 3000);
+}
+
+function actualizarHoras(idRuta, idHora) {
+  const ruta = document.getElementById(idRuta).value;
+  const selector = document.getElementById(idHora);
+  const anterior = selector.value;
+
+  selector.innerHTML = rutas[ruta].horas.map(h =>
+    `<option value="${h}">${horaBonita(h)}</option>`
+  ).join("");
+
+  if (rutas[ruta].horas.includes(anterior)) {
+    selector.value = anterior;
+  }
+}
+
+function mostrarVista(vista, boton) {
+  ["pasajero", "chofer", "admin"].forEach(id => {
+    document.getElementById(id).classList.toggle(
+      "oculto", id !== vista
+    );
+  });
+
+  document.querySelectorAll(".menu button").forEach(b => {
+    b.classList.remove("activo");
+  });
+
+  boton.classList.add("activo");
+
+  actualizarTodo();
+}
+
+function estadoHTML(estado) {
+  let clase = "";
+
+  if (estado === "Abordó") clase = "abordo";
+  if (estado === "Cancelada") clase = "cancelada";
+
+  return `<span class="estado ${clase}">${escapar(estado)}</span>`;
+}
+
+document.getElementById("fecha").min = fechaLocal();
+document.getElementById("fecha").value = fechaLocal();
+document.getElementById("fechaChofer").value = fechaLocal();
+
+actualizarHoras("ruta", "hora");
+actualizarHoras("rutaChofer", "horaChofer");
+
+document.getElementById("ruta").addEventListener("change", () => {
+  actualizarHoras("ruta", "hora");
+});
+
+document.getElementById("rutaChofer").addEventListener("change", () => {
+  actualizarHoras("rutaChofer", "horaChofer");
+  actualizarTodo();
+});
+
+document.getElementById("horaChofer").addEventListener("change", actualizarTodo);
+document.getElementById("fechaChofer").addEventListener("change", actualizarTodo);
+
+document.getElementById("formulario").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const nombre = document.getElementById("nombre").value.trim();
+  const dni = document.getElementById("dni").value.trim();
+  const celular = document.getElementById("celular").value.trim();
+  const ruta = document.getElementById("ruta").value;
+  const fecha = document.getElementById("fecha").value;
+  const hora = document.getElementById("hora").value;
+
+  if (!nombre || !dni || !celular || !fecha) {
+    avisar("Completa todos los campos.");
+    return;
+  }
+
+  if (fecha < fechaLocal()) {
+    avisar("Selecciona una fecha actual o futura.");
+    return;
+  }
+
+  const codigo = "PL-" +
+    Math.random().toString(36).substring(2, 6).toUpperCase() +
+    "-" + Date.now().toString().slice(-5);
+
+  reservas.unshift({
+    codigo,
+    nombre,
+    dni,
+    celular,
+    ruta,
+    fecha,
+    hora,
+    estado: "Reservada"
+  });
+
+  guardar();
+  this.reset();
+
+  document.getElementById("fecha").min = fechaLocal();
+  document.getElementById("fecha").value = fechaLocal();
+  document.getElementById("ruta").value = "AB";
+  actualizarHoras("ruta", "hora");
+
+  avisar("Reserva creada. Código: " + codigo);
+});
+
+function actualizarMisReservas() {
+  const caja = document.getElementById("misReservas");
+
+  if (!reservas.length) {
+    caja.innerHTML = '<div class="vacio">Todavía no hay reservas.</div>';
+    return;
+  }
+
+  caja.innerHTML = reservas.map(r => `
+    <div class="reserva">
+      <strong>${escapar(r.nombre)}</strong>
+      <div class="detalle">
+        Código: ${escapar(r.codigo)}<br>
+        ${escapar(textoRuta(r.ruta))}<br>
+        Fecha: ${fechaBonita(r.fecha)}<br>
+        Hora: ${horaBonita(r.hora)}<br>
+        DNI: ${escapar(r.dni)}<br>
+        Celular: ${escapar(r.celular)}
+      </div>
+      ${estadoHTML(r.estado)}
+      ${r.estado === "Reservada" ? `
+        <button class="btn secundario"
+          style="margin-top:10px"
+          onclick="cancelarReserva('${r.codigo}')">
+          Cancelar reserva
+        </button>` : ""}
+    </div>
+  `).join("");
+}
+
+function actualizarChofer() {
+  const ruta = document.getElementById("rutaChofer").value;
+  const fecha = document.getElementById("fechaChofer").value;
+  const hora = document.getElementById("horaChofer").value;
+
+  const lista = reservas.filter(r =>
+    r.ruta === ruta &&
+    r.fecha === fecha &&
+    r.hora === hora &&
+    r.estado !== "Cancelada"
+  );
+
+  document.getElementById("totalChofer").textContent = lista.length;
+  document.getElementById("subidosChofer").textContent =
+    lista.filter(r => r.estado === "Abordó").length;
+  document.getElementById("pendientesChofer").textContent =
+    lista.filter(r => r.estado === "Reservada").length;
+
+  const caja = document.getElementById("listaChofer");
+
+  if (!lista.length) {
+    caja.innerHTML = '<div class="vacio">No hay pasajeros para este turno.</div>';
+    return;
+  }
+
+  caja.innerHTML = lista.map(r => `
+    <div class="reserva">
+      <strong>${escapar(r.nombre)}</strong>
+      <div class="detalle">
+        Código: ${escapar(r.codigo)}<br>
+        DNI: ${escapar(r.dni)}<br>
+        Celular: ${escapar(r.celular)}
+      </div>
+      ${estadoHTML(r.estado)}
+      ${r.estado === "Reservada" ? `
+        <button class="btn verde"
+          style="margin-top:10px"
+          onclick="marcarAbordaje('${r.codigo}')">
+          Marcar como abordó
+        </button>` : ""}
+    </div>
+  `).join("");
+}
+
+function actualizarAdmin() {
+  document.getElementById("totalAdmin").textContent = reservas.length;
+
+  document.getElementById("pendientesAdmin").textContent =
+    reservas.filter(r => r.estado === "Reservada").length;
+
+  document.getElementById("subidosAdmin").textContent =
+    reservas.filter(r => r.estado === "Abordó").length;
+
+  const tabla = document.getElementById("tablaAdmin");
+
+  if (!reservas.length) {
+    tabla.innerHTML = '<tr><td colspan="6">No hay reservas registradas.</td></tr>';
+    return;
+  }
+
+  tabla.innerHTML = reservas.map(r => `
+    <tr>
+      <td>${escapar(r.codigo)}</td>
+      <td>${escapar(r.nombre)}</td>
+      <td>${escapar(textoRuta(r.ruta))}</td>
+      <td>${fechaBonita(r.fecha)}<br>${horaBonita(r.hora)}</td>
+      <td>${estadoHTML(r.estado)}</td>
+      <td>
+        ${r.estado === "Reservada" ? `
+          <button class="rojo"
+            onclick="cancelarReserva('${r.codigo}')">
+            Cancelar
+          </button>` : "—"}
+      </td>
+    </tr>
+  `).join("");
+}
+
+function marcarAbordaje(codigo) {
+  const reserva = reservas.find(r => r.codigo === codigo);
+
+  if (reserva && reserva.estado === "Reservada") {
+    reserva.estado = "Abordó";
+    guardar();
+    avisar("Abordaje registrado.");
+  }
+}
+
+function cancelarReserva(codigo) {
+  const reserva = reservas.find(r => r.codigo === codigo);
+
+  if (reserva && reserva.estado === "Reservada") {
+    reserva.estado = "Cancelada";
+    guardar();
+    avisar("Reserva cancelada.");
+  }
+}
+
+function exportarCSV() {
+  if (!reservas.length) {
+    avisar("No hay reservas para exportar.");
+    return;
+  }
+
+  const filas = [
+    ["Codigo", "Nombre", "DNI", "Celular", "Origen",
+      "Destino", "Fecha", "Hora", "Estado"],
+    ...reservas.map(r => [
+      r.codigo, r.nombre, r.dni, r.celular,
+      rutas[r.ruta].origen, rutas[r.ruta].destino,
+      r.fecha, r.hora, r.estado
+    ])
+  ];
+
+  const contenido = "\uFEFF" + filas.map(fila =>
+    fila.map(valor =>
+      '"' + String(valor).replace(/"/g, '""') + '"'
+    ).join(",")
+  ).join("\r\n");
+
+  const archivo = new Blob([contenido], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const enlace = document.createElement("a");
+  enlace.href = URL.createObjectURL(archivo);
+  enlace.download = "reservas_pasaje_en_linea.csv";
+  enlace.click();
+
+  URL.revokeObjectURL(enlace.href);
+}
+
+function borrarReservas() {
+  if (confirm("¿Deseas borrar todas las reservas de prueba?")) {
+    reservas = [];
+    guardar();
+    avisar("Reservas de prueba eliminadas.");
+  }
+}
+
+function actualizarTodo() {
+  actualizarMisReservas();
+  actualizarChofer();
+  actualizarAdmin();
+}
+
+actualizarTodo();
+</script>
+
+</body>
+</html>
