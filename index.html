@@ -1,38 +1,37 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pasaje en Línea</title>
+<title>Pasaje en Línea | Reservas</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
-  --fondo: #f1f5f9;
   --azul: #102b46;
+  --azul2: #205078;
   --primario: #2563eb;
-  --verde: #0e9f6e;
+  --fondo: #f1f5f9;
   --blanco: #ffffff;
   --texto: #1e293b;
   --gris: #64748b;
   --borde: #dbe3ed;
+  --verde: #0e9f6e;
+  --rojo: #b91c1c;
 }
-
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: var(--fondo);
   color: var(--texto);
 }
-
 header {
-  background: linear-gradient(120deg, #102b46, #205078);
+  background: linear-gradient(120deg, var(--azul), var(--azul2));
   color: white;
   padding: 22px;
 }
-
 .cabecera {
   max-width: 1100px;
   margin: auto;
@@ -40,47 +39,21 @@ header {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 15px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
   gap: 12px;
 }
-
+.logo { display: flex; align-items: center; gap: 12px; }
 .icono {
   background: #41d6cf;
-  color: #102b46;
+  color: var(--azul);
   padding: 13px;
   border-radius: 12px;
-  font-weight: bold;
   font-size: 23px;
+  font-weight: bold;
 }
-
 h1 { margin: 0; font-size: 25px; }
-header p { margin: 5px 0 0; color: #d5e8f5; }
-
-.etiqueta {
-  border: 1px solid #91b9d7;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-}
-
-main {
-  max-width: 1100px;
-  margin: 25px auto;
-  padding: 0 16px;
-}
-
-h2 { margin-bottom: 8px; }
-
-.intro {
-  color: var(--gris);
-  line-height: 1.6;
-}
-
+header p { color: #d5e8f5; margin-bottom: 0; }
+main { max-width: 1100px; margin: 25px auto; padding: 0 16px; }
+.intro { color: var(--gris); line-height: 1.6; }
 .nota {
   background: #e0f2fe;
   padding: 14px;
@@ -89,64 +62,26 @@ h2 { margin-bottom: 8px; }
   line-height: 1.6;
   margin: 20px 0;
 }
-
-.menu {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 20px 0;
-}
-
-button {
-  cursor: pointer;
-  font-size: 14px;
-  border: none;
-  border-radius: 9px;
-  padding: 12px 16px;
-  font-weight: bold;
-}
-
-.menu button {
-  background: white;
-  color: var(--azul);
-  border: 1px solid var(--borde);
-}
-
-.menu button.activo,
-.btn {
-  background: var(--primario);
-  color: white;
-}
-
-.contenedor {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
 .panel {
-  background: var(--blanco);
+  background: white;
   border: 1px solid var(--borde);
   border-radius: 15px;
   padding: 22px;
   margin-bottom: 20px;
   box-shadow: 0 5px 18px #102b4609;
 }
-
-.panel h3 { margin-top: 0; }
-
-.campo {
-  margin-bottom: 15px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  align-items: start;
 }
-
 label {
   display: block;
   font-size: 13px;
   font-weight: bold;
-  margin-bottom: 7px;
+  margin: 12px 0 7px;
 }
-
 input, select {
   width: 100%;
   padding: 12px;
@@ -155,172 +90,48 @@ input, select {
   background: white;
   color: var(--texto);
 }
-
-input:focus, select:focus {
-  outline: 2px solid #bfdbfe;
-  border-color: var(--primario);
+button {
+  cursor: pointer;
+  font-size: 14px;
+  border: none;
+  border-radius: 9px;
+  padding: 12px 16px;
+  font-weight: bold;
+  margin-top: 10px;
 }
-
-.filas {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+button:disabled { opacity: .5; cursor: not-allowed; }
+.btn { background: var(--primario); color: white; }
+.secundario { background: #e2e8f0; color: var(--texto); }
+.verde { background: var(--verde); color: white; }
+.rojo { background: #fee2e2; color: var(--rojo); }
+.completo { width: 100%; }
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
 }
-
-.btn {
-  width: 100%;
-  margin-top: 5px;
-}
-
-.secundario {
-  background: #e2e8f0;
-  color: #1e293b;
-}
-
-.verde {
-  background: var(--verde);
-  color: white;
-}
-
-.rojo {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.ruta {
-  border: 1px solid var(--borde);
-  border-radius: 10px;
-  padding: 13px;
-  margin-bottom: 10px;
-  line-height: 1.7;
-}
-
-.ruta strong { color: var(--azul); }
-
-.ruta p {
-  font-size: 13px;
-  color: var(--gris);
-  margin: 5px 0 0;
-}
-
-.lista {
-  display: grid;
-  gap: 12px;
-}
-
+.menu button { background: white; border: 1px solid var(--borde); }
+.menu button.activo { background: var(--primario); color: white; }
 .reserva {
   border: 1px solid var(--borde);
   border-radius: 10px;
   padding: 14px;
+  margin: 12px 0;
   overflow-wrap: anywhere;
+  background: white;
 }
-
-.reserva strong {
-  display: block;
-  margin-bottom: 7px;
-}
-
-.detalle {
-  color: var(--gris);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.estado {
-  display: inline-block;
-  margin-top: 8px;
-  border-radius: 20px;
-  padding: 5px 9px;
-  font-size: 11px;
-  font-weight: bold;
-  background: #dbeafe;
-  color: #1d4ed8;
-}
-
-.estado.abordo {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.estado.cancelada {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.resumen {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--borde);
-  padding: 12px 0;
-  gap: 10px;
-  font-size: 13px;
-}
-
-.resumen span { color: var(--gris); }
-
+.detalle { color: var(--gris); font-size: 13px; line-height: 1.8; }
+.oculto { display: none !important; }
 .vacio {
   color: var(--gris);
   text-align: center;
-  padding: 25px 10px;
+  padding: 20px;
   border: 1px dashed #cbd5e1;
   border-radius: 10px;
-  font-size: 13px;
 }
-
-.oculto { display: none; }
-
-.estadisticas {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.estadistica {
-  background: #f8fafc;
-  border: 1px solid var(--borde);
-  border-radius: 10px;
-  padding: 14px;
-}
-
-.estadistica strong {
-  display: block;
-  font-size: 24px;
-  margin-bottom: 5px;
-}
-
-.estadistica span {
-  font-size: 11px;
-  color: var(--gris);
-}
-
-.tabla {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 650px;
-}
-
-th, td {
-  text-align: left;
-  border-bottom: 1px solid var(--borde);
-  padding: 12px 8px;
-  font-size: 12px;
-}
-
-th { color: var(--gris); }
-
-footer {
-  text-align: center;
-  color: var(--gris);
-  padding: 25px 10px;
-  font-size: 12px;
-}
-
 #mensaje {
+  display: none;
   position: fixed;
   bottom: 20px;
   left: 50%;
@@ -328,17 +139,20 @@ footer {
   background: var(--azul);
   color: white;
   border-radius: 10px;
-  padding: 13px 18px;
-  display: none;
+  padding: 14px;
   max-width: 90%;
-  font-size: 13px;
+  z-index: 10;
+  box-shadow: 0 4px 15px #0002;
 }
-
-@media(max-width:750px) {
-  .contenedor { grid-template-columns: 1fr; }
-  .filas { grid-template-columns: 1fr; }
+footer {
+  text-align: center;
+  color: var(--gris);
+  padding: 25px;
+  font-size: 12px;
+}
+@media(max-width:600px) {
   .panel { padding: 16px; }
-  .cabecera { align-items: flex-start; }
+  h1 { font-size: 22px; }
 }
 </style>
 </head>
@@ -354,297 +168,199 @@ footer {
         <p>Tu viaje comienza aquí</p>
       </div>
     </div>
-    <div class="etiqueta">DEMOSTRACIÓN LOCAL</div>
+    <span>PLATAFORMA DE RESERVAS</span>
   </div>
 </header>
 
 <main>
   <h2>Reservas de transporte</h2>
   <p class="intro">
-    Reserva tus pasajes entre Sitabamba y Huamachuco
-    de manera sencilla.
+    Organiza tus viajes entre Sitabamba y Huamachuco.
   </p>
 
   <div class="nota">
-    <strong>Versión de prueba:</strong> los datos se guardan
-    en este navegador. No se envían mensajes reales por WhatsApp
-    ni se generan códigos QR escaneables.
-    Utiliza datos ficticios.
+    <strong>Versión de prueba:</strong> utiliza información ficticia.
+    Antes de publicar el servicio para pasajeros reales, verifica los
+    permisos de Supabase, la capacidad de los vehículos y los datos personales.
   </div>
 
-  <nav class="menu">
-    <button class="activo" onclick="mostrarVista('pasajero',this)">
-      Pasajero
-    </button>
-    <button onclick="mostrarVista('chofer',this)">
-      Chofer
-    </button>
-    <button onclick="mostrarVista('admin',this)">
-      Administrador
-    </button>
-  </nav>
+  <section class="panel">
+    <h3>Acceso a tu cuenta</h3>
 
-  <!-- VISTA PASAJERO -->
-  <section id="pasajero">
-    <div class="contenedor">
-      <div>
-        <div class="panel">
-          <h3>Reservar un pasaje</h3>
-          <p class="intro">Completa tus datos de prueba.</p>
+    <form id="formAuth">
+      <label for="nombreRegistro">Nombre (solo al crear una cuenta)</label>
+      <input id="nombreRegistro" maxlength="90"
+             placeholder="Nombre de prueba">
 
-          <form id="formulario">
-            <div class="campo">
-              <label for="nombre">Nombre completo</label>
-              <input id="nombre" maxlength="90"
-                placeholder="Ej. Juan Pérez" required>
-            </div>
+      <label for="correo">Correo electrónico</label>
+      <input id="correo" type="email" autocomplete="email"
+             placeholder="correo@ejemplo.com" required>
 
-            <div class="filas">
-              <div class="campo">
-                <label for="dni">DNI de prueba</label>
-                <input id="dni" maxlength="12"
-                  placeholder="Documento ficticio" required>
-              </div>
-              <div class="campo">
-                <label for="celular">Celular / WhatsApp</label>
-                <input id="celular" maxlength="20"
-                  placeholder="Número ficticio" required>
-              </div>
-            </div>
+      <label for="contrasena">Contraseña</label>
+      <input id="contrasena" type="password"
+             autocomplete="current-password" minlength="6"
+             placeholder="Mínimo 6 caracteres" required>
 
-            <div class="campo">
-              <label for="ruta">Selecciona la ruta</label>
-              <select id="ruta" required>
-                <option value="AB">Sitabamba → Huamachuco</option>
-                <option value="BA">Huamachuco → Sitabamba</option>
-              </select>
-            </div>
+      <button class="btn completo" type="submit">
+        Iniciar sesión
+      </button>
 
-            <div class="filas">
-              <div class="campo">
-                <label for="fecha">Fecha de viaje</label>
-                <input type="date" id="fecha" required>
-              </div>
-              <div class="campo">
-                <label for="hora">Hora de salida</label>
-                <select id="hora" required></select>
-              </div>
-            </div>
+      <button class="secundario completo" type="button"
+              id="crearCuenta">
+        Crear cuenta de pasajero
+      </button>
 
-            <button class="btn" type="submit">
-              Crear reserva
-            </button>
-          </form>
-        </div>
+      <button class="rojo completo oculto" type="button"
+              id="cerrarSesion">
+        Cerrar sesión
+      </button>
+    </form>
 
-        <div class="panel">
-          <h3>Reservas registradas</h3>
-          <div id="misReservas" class="lista"></div>
-        </div>
-      </div>
-
-      <aside>
-        <div class="panel">
-          <h3>Rutas y horarios</h3>
-
-          <div class="ruta">
-            <strong>Sitabamba → Huamachuco</strong>
-            <p>Salida: 2:00 a. m.</p>
-            <p>Salida: 8:00 a. m.</p>
-          </div>
-
-          <div class="ruta">
-            <strong>Huamachuco → Sitabamba</strong>
-            <p>Salida: 2:00 a. m.</p>
-            <p>Salida: 2:00 p. m.</p>
-          </div>
-
-          <div class="resumen">
-            <span>Precio del pasaje</span>
-            <strong>Por configurar</strong>
-          </div>
-
-          <div class="resumen">
-            <span>Código de reserva</span>
-            <strong>Generación automática</strong>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h3>¿Cómo funciona?</h3>
-          <p class="intro">
-            1. Elige tu ruta.<br><br>
-            2. Selecciona la fecha y hora.<br><br>
-            3. Registra tus datos.<br><br>
-            4. Guarda tu código de reserva.
-          </p>
-        </div>
-      </aside>
-    </div>
+    <p id="estadoSesion" class="intro">No has iniciado sesión.</p>
   </section>
 
-  <!-- VISTA CHOFER -->
-  <section id="chofer" class="oculto">
-    <div class="panel">
-      <h3>Panel del chofer</h3>
-      <p class="intro">
-        Consulta los pasajeros de la ruta y turno seleccionados.
-      </p>
+  <nav class="menu">
+    <button class="activo" data-vista="pasajero"
+            onclick="mostrarVista('pasajero',this)">Pasajero</button>
+    <button data-vista="conductor"
+            onclick="mostrarVista('conductor',this)">Conductor</button>
+    <button data-vista="admin"
+            onclick="mostrarVista('admin',this)">Administrador</button>
+  </nav>
 
-      <div class="filas">
-        <div class="campo">
-          <label for="rutaChofer">Ruta</label>
-          <select id="rutaChofer">
+  <!-- PASAJERO -->
+  <section id="pasajero">
+    <div class="grid">
+      <div class="panel">
+        <h3>Reservar un pasaje</h3>
+
+        <form id="formReserva">
+          <label for="nombre">Nombre del pasajero</label>
+          <input id="nombre" maxlength="90" required
+                 placeholder="Nombre de prueba">
+
+          <label for="dni">DNI de prueba</label>
+          <input id="dni" maxlength="12" required
+                 placeholder="No uses tu DNI real">
+
+          <label for="telefono">Teléfono de prueba</label>
+          <input id="telefono" maxlength="20" required
+                 placeholder="Número ficticio">
+
+          <label for="ruta">Ruta</label>
+          <select id="ruta" required>
             <option value="AB">Sitabamba → Huamachuco</option>
             <option value="BA">Huamachuco → Sitabamba</option>
           </select>
-        </div>
 
-        <div class="campo">
-          <label for="fechaChofer">Fecha del viaje</label>
-          <input type="date" id="fechaChofer">
-        </div>
+          <label for="fecha">Fecha del viaje</label>
+          <input id="fecha" type="date" required>
 
-        <div class="campo">
-          <label for="horaChofer">Turno</label>
-          <select id="horaChofer"></select>
-        </div>
+          <label for="horario">Hora de salida</label>
+          <select id="horario" required>
+            <option value="">Carga los horarios al iniciar sesión</option>
+          </select>
+
+          <button class="btn completo" id="btnReservar" type="submit">
+            Crear reserva
+          </button>
+        </form>
       </div>
 
-      <div class="estadisticas">
-        <div class="estadistica">
-          <strong id="totalChofer">0</strong>
-          <span>Reservas activas</span>
-        </div>
-        <div class="estadistica">
-          <strong id="subidosChofer">0</strong>
-          <span>Abordaron</span>
-        </div>
-        <div class="estadistica">
-          <strong id="pendientesChofer">0</strong>
-          <span>Pendientes</span>
+      <div class="panel">
+        <h3>Mis reservas</h3>
+        <div id="misReservas">
+          <div class="vacio">Inicia sesión para consultar tus reservas.</div>
         </div>
       </div>
-
-      <div id="listaChofer" class="lista"></div>
     </div>
   </section>
 
-  <!-- VISTA ADMINISTRADOR -->
+  <!-- CONDUCTOR -->
+  <section id="conductor" class="oculto">
+    <div class="panel">
+      <h3>Panel del conductor</h3>
+      <p class="intro">Consulta los pasajeros de tus viajes asignados.</p>
+
+      <label for="fechaConductor">Fecha del viaje</label>
+      <input type="date" id="fechaConductor">
+
+      <label for="horarioConductor">Horario asignado</label>
+      <select id="horarioConductor"></select>
+
+      <button class="btn" onclick="cargarReservasConductor()">
+        Buscar pasajeros
+      </button>
+
+      <div id="listaConductor"></div>
+    </div>
+  </section>
+
+  <!-- ADMINISTRADOR -->
   <section id="admin" class="oculto">
     <div class="panel">
-      <h3>Panel del administrador</h3>
-      <p class="intro">
-        Consulta todas las reservas de esta demostración.
-      </p>
+      <h3>Panel administrativo</h3>
+      <p class="intro">Gestión de reservas de la plataforma.</p>
 
-      <div class="estadisticas">
-        <div class="estadistica">
-          <strong id="totalAdmin">0</strong>
-          <span>Total reservas</span>
-        </div>
-        <div class="estadistica">
-          <strong id="pendientesAdmin">0</strong>
-          <span>Reservadas</span>
-        </div>
-        <div class="estadistica">
-          <strong id="subidosAdmin">0</strong>
-          <span>Abordaron</span>
-        </div>
-      </div>
-
-      <button class="btn" onclick="exportarCSV()">
-        Exportar reservas a CSV
+      <button class="btn" onclick="cargarAdministracion()">
+        Actualizar reservas
       </button>
 
-      <button class="btn secundario"
-        style="margin-top:10px"
-        onclick="borrarReservas()">
-        Borrar todas las reservas de prueba
+      <button class="secundario" onclick="exportarCSV()">
+        Exportar CSV
       </button>
 
-      <br><br>
-
-      <div class="tabla">
-        <table>
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Pasajero</th>
-              <th>Ruta</th>
-              <th>Fecha y hora</th>
-              <th>Estado</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody id="tablaAdmin"></tbody>
-        </table>
-      </div>
+      <div id="estadisticas"></div>
+      <div id="listaAdmin"></div>
     </div>
   </section>
-
-  <footer>
-    Pasaje en Línea · Prototipo inicial · No usar para viajes reales
-  </footer>
 </main>
 
-<div id="mensaje"></div>
+<footer>Pasaje en Línea · Plataforma de reservas</footer>
+<div id="mensaje" role="status" aria-live="polite"></div>
 
 <script>
-const CLAVE = "pasaje_en_linea_reservas_v1";
+"use strict";
 
-const rutas = {
-  AB: {
-    origen: "Sitabamba",
-    destino: "Huamachuco",
-    horas: ["02:00", "08:00"]
-  },
-  BA: {
-    origen: "Huamachuco",
-    destino: "Sitabamba",
-    horas: ["02:00", "14:00"]
-  }
-};
+/* CONFIGURACIÓN DE SUPABASE */
+const SUPABASE_URL =
+  "https://sufkzyrifsckyctfdgia.supabase.co";
 
-let reservas = cargarReservas();
+const SUPABASE_KEY =
+  "sb_publishable_Rm__z1NNrrdd8D9X_V7nfA_3RZX-Top";
 
-function cargarReservas() {
-  try {
-    return JSON.parse(localStorage.getItem(CLAVE) || "[]");
-  } catch {
-    return [];
-  }
-}
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-function guardar() {
-  localStorage.setItem(CLAVE, JSON.stringify(reservas));
-  actualizarTodo();
+/* ESTADO DE LA APLICACIÓN */
+let usuario = null;
+let perfil = null;
+let rutas = [];
+let horarios = [];
+let reservasAdmin = [];
+
+const $ = id => document.getElementById(id);
+
+function avisar(texto) {
+  const caja = $("mensaje");
+  caja.textContent = texto;
+  caja.style.display = "block";
+
+  clearTimeout(avisar.temporizador);
+  avisar.temporizador = setTimeout(() => {
+    caja.style.display = "none";
+  }, 4500);
 }
 
 function fechaLocal() {
-  const d = new Date();
-  return d.getFullYear() + "-" +
-    String(d.getMonth() + 1).padStart(2, "0") + "-" +
-    String(d.getDate()).padStart(2, "0");
-}
+  const ahora = new Date();
+  const anio = ahora.getFullYear();
+  const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+  const dia = String(ahora.getDate()).padStart(2, "0");
 
-function horaBonita(hora) {
-  const horas = {
-    "02:00": "2:00 a. m.",
-    "08:00": "8:00 a. m.",
-    "14:00": "2:00 p. m."
-  };
-  return horas[hora] || hora;
-}
-
-function fechaBonita(fecha) {
-  if (!fecha) return "";
-  const partes = fecha.split("-");
-  return partes[2] + "/" + partes[1] + "/" + partes[0];
-}
-
-function textoRuta(codigo) {
-  return rutas[codigo].origen + " → " + rutas[codigo].destino;
+  return `${anio}-${mes}-${dia}`;
 }
 
 function escapar(valor) {
@@ -657,298 +373,826 @@ function escapar(valor) {
   })[letra]);
 }
 
-function avisar(texto) {
-  const m = document.getElementById("mensaje");
-  m.textContent = texto;
-  m.style.display = "block";
-
-  clearTimeout(window.temporizadorAviso);
-  window.temporizadorAviso = setTimeout(() => {
-    m.style.display = "none";
-  }, 3000);
+function rolActual() {
+  return perfil?.rol || "sin_perfil";
 }
 
-function actualizarHoras(idRuta, idHora) {
-  const ruta = document.getElementById(idRuta).value;
-  const selector = document.getElementById(idHora);
-  const anterior = selector.value;
-
-  selector.innerHTML = rutas[ruta].horas.map(h =>
-    `<option value="${h}">${horaBonita(h)}</option>`
-  ).join("");
-
-  if (rutas[ruta].horas.includes(anterior)) {
-    selector.value = anterior;
-  }
+function esAdmin() {
+  return rolActual() === "admin";
 }
 
+function esConductor() {
+  return ["conductor", "admin"].includes(rolActual());
+}
+
+/* CAMBIO DE PANELES */
 function mostrarVista(vista, boton) {
-  ["pasajero", "chofer", "admin"].forEach(id => {
-    document.getElementById(id).classList.toggle(
-      "oculto", id !== vista
-    );
+  if (!usuario || !perfil) {
+    avisar("Primero inicia sesión con una cuenta configurada.");
+    return;
+  }
+
+  if (vista === "conductor" && !esConductor()) {
+    avisar("Tu cuenta no tiene el rol de conductor.");
+    return;
+  }
+
+  if (vista === "admin" && !esAdmin()) {
+    avisar("Tu cuenta no tiene el rol de administrador.");
+    return;
+  }
+
+  ["pasajero", "conductor", "admin"].forEach(id => {
+    $(id).classList.toggle("oculto", id !== vista);
   });
 
   document.querySelectorAll(".menu button").forEach(b => {
     b.classList.remove("activo");
   });
 
-  boton.classList.add("activo");
+  if (boton) boton.classList.add("activo");
 
-  actualizarTodo();
+  if (vista === "admin") cargarAdministracion();
 }
 
-function estadoHTML(estado) {
-  let clase = "";
+/* INTERFAZ DE SESIÓN */
+function actualizarInterfaz() {
+  const conectado = Boolean(usuario && perfil);
 
-  if (estado === "Abordó") clase = "abordo";
-  if (estado === "Cancelada") clase = "cancelada";
+  $("crearCuenta").classList.toggle("oculto", Boolean(usuario));
+  $("cerrarSesion").classList.toggle("oculto", !usuario);
 
-  return `<span class="estado ${clase}">${escapar(estado)}</span>`;
+  $("btnReservar").disabled =
+    !conectado || rolActual() !== "pasajero";
+
+  if (!usuario) {
+    $("estadoSesion").textContent = "No has iniciado sesión.";
+  } else if (!perfil) {
+    $("estadoSesion").textContent =
+      "No se encontró un perfil para esta cuenta. Revisa la configuración.";
+  } else {
+    $("estadoSesion").textContent =
+      `Sesión: ${usuario.email} · Rol: ${perfil.rol}`;
+  }
+
+  if (!conectado) {
+    ["conductor", "admin"].forEach(id => {
+      $(id).classList.add("oculto");
+    });
+    $("pasajero").classList.remove("oculto");
+  }
 }
 
-document.getElementById("fecha").min = fechaLocal();
-document.getElementById("fecha").value = fechaLocal();
-document.getElementById("fechaChofer").value = fechaLocal();
+/* PERFIL */
+async function cargarPerfil() {
+  if (!usuario) {
+    perfil = null;
+    return;
+  }
 
-actualizarHoras("ruta", "hora");
-actualizarHoras("rutaChofer", "horaChofer");
+  const { data, error } = await supabaseClient
+    .from("perfiles")
+    .select("id,nombre,telefono,rol")
+    .eq("id", usuario.id)
+    .maybeSingle();
 
-document.getElementById("ruta").addEventListener("change", () => {
-  actualizarHoras("ruta", "hora");
-});
+  if (error) throw error;
+  perfil = data;
+}
 
-document.getElementById("rutaChofer").addEventListener("change", () => {
-  actualizarHoras("rutaChofer", "horaChofer");
-  actualizarTodo();
-});
+/*
+  Crea un perfil de pasajero si falta.
+  La política RLS de perfiles debe permitir que cada usuario
+  inserte únicamente su propio perfil.
+  El rol nunca se toma de los datos enviados por el usuario.
+*/
+async function asegurarPerfil(nombre) {
+  if (!usuario) throw new Error("No hay una sesión activa.");
 
-document.getElementById("horaChofer").addEventListener("change", actualizarTodo);
-document.getElementById("fechaChofer").addEventListener("change", actualizarTodo);
+  const { data: existente, error: errorLectura } =
+    await supabaseClient
+      .from("perfiles")
+      .select("id,nombre,telefono,rol")
+      .eq("id", usuario.id)
+      .maybeSingle();
 
-document.getElementById("formulario").addEventListener("submit", function(e) {
+  if (errorLectura) throw errorLectura;
+
+  if (existente) {
+    perfil = existente;
+    return;
+  }
+
+  const nombreSeguro =
+    String(nombre || usuario.user_metadata?.nombre || "Pasajero")
+      .trim()
+      .slice(0, 90);
+
+  const { error: errorInsercion } = await supabaseClient
+    .from("perfiles")
+    .insert({
+      id: usuario.id,
+      nombre: nombreSeguro,
+      telefono: "",
+      rol: "pasajero"
+    });
+
+  if (errorInsercion) {
+    throw new Error(
+      "No se pudo crear el perfil. Verifica la política INSERT de perfiles."
+    );
+  }
+
+  await cargarPerfil();
+}
+
+/* RUTAS Y HORARIOS */
+async function cargarCatalogos() {
+  const resultadoRutas = await supabaseClient
+    .from("rutas")
+    .select("id,origen,destino,activa")
+    .eq("activa", true);
+
+  if (resultadoRutas.error) throw resultadoRutas.error;
+
+  rutas = resultadoRutas.data || [];
+
+  const resultadoHorarios = await supabaseClient
+    .from("horarios")
+    .select("id,ruta_id,hora_salida,conductor_id,capacidad,activo")
+    .eq("activo", true);
+
+  if (resultadoHorarios.error) throw resultadoHorarios.error;
+
+  horarios = resultadoHorarios.data || [];
+  llenarSelectores();
+}
+
+function horaBonita(hora) {
+  if (!hora) return "Sin hora";
+
+  const [horas, minutos = "00"] = hora.split(":");
+  let h = Number(horas);
+  const sufijo = h >= 12 ? "p. m." : "a. m.";
+
+  h = h % 12 || 12;
+
+  return `${h}:${minutos} ${sufijo}`;
+}
+
+function rutaDelHorario(id) {
+  const horario = horarios.find(h => String(h.id) === String(id));
+
+  return rutas.find(r => r.id === horario?.ruta_id);
+}
+
+function llenarSelectores() {
+  const rutaSeleccionada = $("ruta").value;
+
+  const horariosRuta = horarios.filter(h => {
+    const r = rutas.find(x => x.id === h.ruta_id);
+
+    if (!r) return false;
+
+    const origen = r.origen.toLowerCase();
+    const destino = r.destino.toLowerCase();
+
+    if (rutaSeleccionada === "AB") {
+      return origen.includes("sitabamba") &&
+             destino.includes("huamachuco");
+    }
+
+    return origen.includes("huamachuco") &&
+           destino.includes("sitabamba");
+  });
+
+  $("horario").innerHTML = horariosRuta.length
+    ? horariosRuta.map(h =>
+        `<option value="${h.id}">
+          ${escapar(horaBonita(h.hora_salida))}
+        </option>`
+      ).join("")
+    : '<option value="">No hay horarios activos para esta ruta</option>';
+
+  let horariosPermitidos = horarios;
+
+  if (rolActual() === "conductor") {
+    horariosPermitidos = horarios.filter(
+      h => h.conductor_id === usuario.id
+    );
+  }
+
+  $("horarioConductor").innerHTML = horariosPermitidos.length
+    ? horariosPermitidos.map(h => {
+        const r = rutas.find(x => x.id === h.ruta_id);
+
+        return `<option value="${h.id}">
+          ${escapar(r?.origen || "")} → ${escapar(r?.destino || "")}
+          · ${escapar(horaBonita(h.hora_salida))}
+        </option>`;
+      }).join("")
+    : '<option value="">No hay horarios asignados</option>';
+}
+
+/* MIS RESERVAS */
+async function cargarMisReservas() {
+  if (!usuario) return;
+
+  const { data, error } = await supabaseClient
+    .from("reservas")
+    .select(
+      "id,codigo,pasajero_id,horario_id,fecha_viaje," +
+      "nombre_pasajero,dni,telefono,estado,created_at"
+    )
+    .eq("pasajero_id", usuario.id)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  const lista = data || [];
+
+  if (!lista.length) {
+    $("misReservas").innerHTML =
+      '<div class="vacio">Todavía no tienes reservas.</div>';
+    return;
+  }
+
+  $("misReservas").innerHTML = lista.map(r => {
+    const h = horarios.find(
+      x => String(x.id) === String(r.horario_id)
+    );
+
+    const ruta = rutaDelHorario(r.horario_id);
+
+    return `<article class="reserva">
+      <strong>${escapar(r.nombre_pasajero)}</strong>
+
+      <div class="detalle">
+        Código: ${escapar(r.codigo)}<br>
+        Ruta: ${escapar(ruta?.origen || "Ruta")} →
+        ${escapar(ruta?.destino || "")}<br>
+        Fecha: ${escapar(r.fecha_viaje)}<br>
+        Hora: ${escapar(horaBonita(h?.hora_salida))}<br>
+        Estado: ${escapar(r.estado)}
+      </div>
+
+      ${r.estado === "reservada"
+        ? `<button class="rojo"
+             onclick="cancelarReserva(${r.id})">
+             Cancelar reserva
+           </button>`
+        : ""}
+    </article>`;
+  }).join("");
+}
+
+/* INICIAR SESIÓN */
+$("formAuth").addEventListener("submit", async e => {
   e.preventDefault();
 
-  const nombre = document.getElementById("nombre").value.trim();
-  const dni = document.getElementById("dni").value.trim();
-  const celular = document.getElementById("celular").value.trim();
-  const ruta = document.getElementById("ruta").value;
-  const fecha = document.getElementById("fecha").value;
-  const hora = document.getElementById("hora").value;
+  const email = $("correo").value.trim();
+  const password = $("contrasena").value;
 
-  if (!nombre || !dni || !celular || !fecha) {
+  try {
+    const { data, error } = await supabaseClient.auth
+      .signInWithPassword({ email, password });
+
+    if (error) throw error;
+
+    usuario = data.user;
+
+    await cargarPerfil();
+
+    if (!perfil) {
+      actualizarInterfaz();
+      avisar("La cuenta no tiene perfil. Verifica la configuración de Supabase.");
+      return;
+    }
+
+    await cargarCatalogos();
+    await cargarMisReservas();
+
+    actualizarInterfaz();
+    avisar("Sesión iniciada correctamente.");
+  } catch (error) {
+    console.error("Error de inicio de sesión:", error);
+    avisar(error.message || "No se pudo iniciar sesión.");
+  }
+});
+
+/* REGISTRO DE PASAJERO */
+$("crearCuenta").addEventListener("click", async () => {
+  const nombre = $("nombreRegistro").value.trim();
+  const email = $("correo").value.trim();
+  const password = $("contrasena").value;
+
+  if (!nombre) {
+    avisar("Escribe tu nombre para crear la cuenta.");
+    $("nombreRegistro").focus();
+    return;
+  }
+
+  if (!email || password.length < 6) {
+    avisar("Escribe un correo y una contraseña de al menos 6 caracteres.");
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { nombre }
+      }
+    });
+
+    if (error) throw error;
+
+    /*
+      Si Supabase devuelve una sesión, se intenta crear el perfil.
+      Si la confirmación de correo está activada, puede que no exista
+      sesión todavía; en ese caso debe crearse el perfil al confirmar
+      el correo, preferiblemente mediante un trigger seguro en la base.
+    */
+    if (data.session && data.user) {
+      usuario = data.user;
+      await asegurarPerfil(nombre);
+      await cargarCatalogos();
+      await cargarMisReservas();
+      actualizarInterfaz();
+
+      avisar("Cuenta creada correctamente.");
+    } else {
+      avisar(
+        "Cuenta registrada. Confirma tu correo y verifica que se cree tu perfil."
+      );
+    }
+  } catch (error) {
+    console.error("Error de registro:", error);
+    avisar(error.message || "No se pudo crear la cuenta.");
+  }
+});
+
+/* CERRAR SESIÓN */
+$("cerrarSesion").addEventListener("click", async () => {
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    avisar("No se pudo cerrar la sesión.");
+    return;
+  }
+
+  usuario = null;
+  perfil = null;
+  horarios = [];
+  rutas = [];
+  reservasAdmin = [];
+
+  $("misReservas").innerHTML =
+    '<div class="vacio">Inicia sesión para ver tus reservas.</div>';
+
+  $("listaConductor").innerHTML = "";
+  $("listaAdmin").innerHTML = "";
+  $("estadisticas").innerHTML = "";
+
+  actualizarInterfaz();
+  avisar("Sesión cerrada.");
+});
+
+/* CAMBIOS DE FORMULARIO */
+$("ruta").addEventListener("change", llenarSelectores);
+
+$("fecha").min = fechaLocal();
+$("fecha").value = fechaLocal();
+$("fechaConductor").value = fechaLocal();
+
+/* CREAR RESERVA */
+$("formReserva").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  if (!usuario || !perfil) {
+    avisar("Inicia sesión antes de reservar.");
+    return;
+  }
+
+  if (rolActual() !== "pasajero") {
+    avisar("Solo las cuentas de pasajero pueden crear reservas.");
+    return;
+  }
+
+  const nombre = $("nombre").value.trim();
+  const dni = $("dni").value.trim();
+  const telefono = $("telefono").value.trim();
+  const fecha = $("fecha").value;
+  const horarioId = $("horario").value;
+
+  if (!nombre || !dni || !telefono || !fecha || !horarioId) {
     avisar("Completa todos los campos.");
     return;
   }
 
   if (fecha < fechaLocal()) {
-    avisar("Selecciona una fecha actual o futura.");
+    avisar("Elige una fecha actual o futura.");
     return;
   }
 
-  const codigo = "PL-" +
-    Math.random().toString(36).substring(2, 6).toUpperCase() +
-    "-" + Date.now().toString().slice(-5);
-
-  reservas.unshift({
-    codigo,
-    nombre,
-    dni,
-    celular,
-    ruta,
-    fecha,
-    hora,
-    estado: "Reservada"
-  });
-
-  guardar();
-  this.reset();
-
-  document.getElementById("fecha").min = fechaLocal();
-  document.getElementById("fecha").value = fechaLocal();
-  document.getElementById("ruta").value = "AB";
-  actualizarHoras("ruta", "hora");
-
-  avisar("Reserva creada. Código: " + codigo);
-});
-
-function actualizarMisReservas() {
-  const caja = document.getElementById("misReservas");
-
-  if (!reservas.length) {
-    caja.innerHTML = '<div class="vacio">Todavía no hay reservas.</div>';
-    return;
-  }
-
-  caja.innerHTML = reservas.map(r => `
-    <div class="reserva">
-      <strong>${escapar(r.nombre)}</strong>
-      <div class="detalle">
-        Código: ${escapar(r.codigo)}<br>
-        ${escapar(textoRuta(r.ruta))}<br>
-        Fecha: ${fechaBonita(r.fecha)}<br>
-        Hora: ${horaBonita(r.hora)}<br>
-        DNI: ${escapar(r.dni)}<br>
-        Celular: ${escapar(r.celular)}
-      </div>
-      ${estadoHTML(r.estado)}
-      ${r.estado === "Reservada" ? `
-        <button class="btn secundario"
-          style="margin-top:10px"
-          onclick="cancelarReserva('${r.codigo}')">
-          Cancelar reserva
-        </button>` : ""}
-    </div>
-  `).join("");
-}
-
-function actualizarChofer() {
-  const ruta = document.getElementById("rutaChofer").value;
-  const fecha = document.getElementById("fechaChofer").value;
-  const hora = document.getElementById("horaChofer").value;
-
-  const lista = reservas.filter(r =>
-    r.ruta === ruta &&
-    r.fecha === fecha &&
-    r.hora === hora &&
-    r.estado !== "Cancelada"
+  const horario = horarios.find(
+    h => String(h.id) === String(horarioId)
   );
 
-  document.getElementById("totalChofer").textContent = lista.length;
-  document.getElementById("subidosChofer").textContent =
-    lista.filter(r => r.estado === "Abordó").length;
-  document.getElementById("pendientesChofer").textContent =
-    lista.filter(r => r.estado === "Reservada").length;
-
-  const caja = document.getElementById("listaChofer");
-
-  if (!lista.length) {
-    caja.innerHTML = '<div class="vacio">No hay pasajeros para este turno.</div>';
+  if (!horario || !horario.activo) {
+    avisar("El horario seleccionado ya no está disponible.");
     return;
   }
 
-  caja.innerHTML = lista.map(r => `
-    <div class="reserva">
-      <strong>${escapar(r.nombre)}</strong>
-      <div class="detalle">
-        Código: ${escapar(r.codigo)}<br>
-        DNI: ${escapar(r.dni)}<br>
-        Celular: ${escapar(r.celular)}
-      </div>
-      ${estadoHTML(r.estado)}
-      ${r.estado === "Reservada" ? `
-        <button class="btn verde"
-          style="margin-top:10px"
-          onclick="marcarAbordaje('${r.codigo}')">
-          Marcar como abordó
-        </button>` : ""}
-    </div>
-  `).join("");
-}
+  $("btnReservar").disabled = true;
 
-function actualizarAdmin() {
-  document.getElementById("totalAdmin").textContent = reservas.length;
+  try {
+    const { data, error } = await supabaseClient
+      .from("reservas")
+      .insert({
+        pasajero_id: usuario.id,
+        horario_id: Number(horarioId),
+        fecha_viaje: fecha,
+        nombre_pasajero: nombre,
+        dni,
+        telefono,
+        estado: "reservada"
+      })
+      .select("codigo")
+      .single();
 
-  document.getElementById("pendientesAdmin").textContent =
-    reservas.filter(r => r.estado === "Reservada").length;
+    if (error) throw error;
 
-  document.getElementById("subidosAdmin").textContent =
-    reservas.filter(r => r.estado === "Abordó").length;
+    $("formReserva").reset();
+    $("fecha").min = fechaLocal();
+    $("fecha").value = fechaLocal();
 
-  const tabla = document.getElementById("tablaAdmin");
+    llenarSelectores();
+    await cargarMisReservas();
 
-  if (!reservas.length) {
-    tabla.innerHTML = '<tr><td colspan="6">No hay reservas registradas.</td></tr>';
+    avisar("Reserva creada. Código: " + data.codigo);
+  } catch (error) {
+    console.error("Error al reservar:", error);
+    avisar(
+      error.message ||
+      "No se pudo crear la reserva. Revisa las políticas RLS."
+    );
+  } finally {
+    $("btnReservar").disabled =
+      !usuario || !perfil || rolActual() !== "pasajero";
+  }
+});
+
+/* CANCELAR RESERVA PROPIA */
+async function cancelarReserva(id) {
+  if (!usuario || !perfil) {
+    avisar("Inicia sesión primero.");
     return;
   }
 
-  tabla.innerHTML = reservas.map(r => `
-    <tr>
-      <td>${escapar(r.codigo)}</td>
-      <td>${escapar(r.nombre)}</td>
-      <td>${escapar(textoRuta(r.ruta))}</td>
-      <td>${fechaBonita(r.fecha)}<br>${horaBonita(r.hora)}</td>
-      <td>${estadoHTML(r.estado)}</td>
-      <td>
-        ${r.estado === "Reservada" ? `
-          <button class="rojo"
-            onclick="cancelarReserva('${r.codigo}')">
-            Cancelar
-          </button>` : "—"}
-      </td>
-    </tr>
-  `).join("");
-}
+  if (!confirm("¿Deseas cancelar esta reserva?")) return;
 
-function marcarAbordaje(codigo) {
-  const reserva = reservas.find(r => r.codigo === codigo);
+  try {
+    const { data, error } = await supabaseClient
+      .from("reservas")
+      .update({ estado: "cancelada" })
+      .eq("id", id)
+      .eq("pasajero_id", usuario.id)
+      .eq("estado", "reservada")
+      .select("id");
 
-  if (reserva && reserva.estado === "Reservada") {
-    reserva.estado = "Abordó";
-    guardar();
-    avisar("Abordaje registrado.");
-  }
-}
+    if (error) throw error;
 
-function cancelarReserva(codigo) {
-  const reserva = reservas.find(r => r.codigo === codigo);
+    if (!data || !data.length) {
+      avisar("No se modificó la reserva. Comprueba su estado y permisos.");
+      return;
+    }
 
-  if (reserva && reserva.estado === "Reservada") {
-    reserva.estado = "Cancelada";
-    guardar();
+    await cargarMisReservas();
     avisar("Reserva cancelada.");
+  } catch (error) {
+    console.error("Error al cancelar:", error);
+    avisar("No se pudo cancelar la reserva. Revisa las políticas RLS.");
   }
 }
 
+/* PANEL DEL CONDUCTOR */
+async function cargarReservasConductor() {
+  if (!usuario || !perfil || !esConductor()) {
+    avisar("No tienes permisos de conductor.");
+    return;
+  }
+
+  const fecha = $("fechaConductor").value;
+  const horarioId = $("horarioConductor").value;
+
+  if (!fecha || !horarioId) {
+    avisar("Selecciona una fecha y un horario.");
+    return;
+  }
+
+  const horario = horarios.find(
+    h => String(h.id) === String(horarioId)
+  );
+
+  if (!horario) {
+    avisar("No se encontró el horario seleccionado.");
+    return;
+  }
+
+  if (rolActual() === "conductor" &&
+      horario.conductor_id !== usuario.id) {
+    avisar("Este horario no está asignado a tu cuenta.");
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("reservas")
+      .select(
+        "id,codigo,nombre_pasajero,dni,telefono,estado," +
+        "fecha_viaje,horario_id"
+      )
+      .eq("fecha_viaje", fecha)
+      .eq("horario_id", Number(horarioId))
+      .neq("estado", "cancelada");
+
+    if (error) throw error;
+
+    const lista = data || [];
+
+    $("listaConductor").innerHTML = lista.length
+      ? lista.map(r => `<article class="reserva">
+          <strong>${escapar(r.nombre_pasajero)}</strong>
+          <div class="detalle">
+            Código: ${escapar(r.codigo)}<br>
+            DNI de prueba: ${escapar(r.dni)}<br>
+            Teléfono de prueba: ${escapar(r.telefono)}<br>
+            Estado: ${escapar(r.estado)}
+          </div>
+
+          ${r.estado === "reservada"
+            ? `<button class="verde"
+                 onclick="marcarAbordaje(${r.id})">
+                 Marcar abordaje
+               </button>`
+            : ""}
+        </article>`).join("")
+      : '<div class="vacio">No hay pasajeros para este turno.</div>';
+  } catch (error) {
+    console.error("Error al consultar pasajeros:", error);
+    avisar(
+      error.message ||
+      "No se pudieron cargar los pasajeros. Revisa las políticas RLS."
+    );
+  }
+}
+
+/* MARCAR ABORDAJE */
+async function marcarAbordaje(id) {
+  if (!usuario || !perfil || !esConductor()) {
+    avisar("No tienes permiso para modificar reservas.");
+    return;
+  }
+
+  const tarjeta = horarios.find(h =>
+    String(h.id) === String($("horarioConductor").value)
+  );
+
+  if (!tarjeta ||
+      (rolActual() === "conductor" &&
+       tarjeta.conductor_id !== usuario.id)) {
+    avisar("El horario no está asignado a tu cuenta.");
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("reservas")
+      .update({ estado: "abordó" })
+      .eq("id", id)
+      .eq("horario_id", tarjeta.id)
+      .eq("fecha_viaje", $("fechaConductor").value)
+      .eq("estado", "reservada")
+      .select("id");
+
+    if (error) throw error;
+
+    if (!data || !data.length) {
+      avisar("No se modificó la reserva. Comprueba sus permisos y estado.");
+      return;
+    }
+
+    await cargarReservasConductor();
+    avisar("Abordaje registrado.");
+  } catch (error) {
+    console.error("Error al registrar abordaje:", error);
+    avisar(
+      error.message ||
+      "No se pudo actualizar. Revisa las políticas RLS."
+    );
+  }
+}
+
+/* PANEL ADMINISTRATIVO */
+async function cargarAdministracion() {
+  if (!usuario || !perfil || !esAdmin()) {
+    avisar("Solo el administrador autorizado puede ver estos datos.");
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("reservas")
+      .select(
+        "id,codigo,nombre_pasajero,telefono,dni," +
+        "fecha_viaje,horario_id,estado,created_at"
+      )
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    reservasAdmin = data || [];
+
+    $("estadisticas").innerHTML = `
+      <div class="reserva">
+        <strong>Total: ${reservasAdmin.length}</strong><br>
+        Pendientes: ${
+          reservasAdmin.filter(r => r.estado === "reservada").length
+        }<br>
+        Abordaron: ${
+          reservasAdmin.filter(r => r.estado === "abordó").length
+        }<br>
+        Canceladas: ${
+          reservasAdmin.filter(r => r.estado === "cancelada").length
+        }
+      </div>`;
+
+    $("listaAdmin").innerHTML = reservasAdmin.length
+      ? reservasAdmin.map(r => {
+          const ruta = rutaDelHorario(r.horario_id);
+          const h = horarios.find(
+            x => String(x.id) === String(r.horario_id)
+          );
+
+          return `<article class="reserva">
+            <strong>${escapar(r.nombre_pasajero)}</strong>
+            <div class="detalle">
+              Código: ${escapar(r.codigo)}<br>
+              DNI de prueba: ${escapar(r.dni)}<br>
+              Teléfono de prueba: ${escapar(r.telefono)}<br>
+              Ruta: ${escapar(ruta?.origen || "")} →
+              ${escapar(ruta?.destino || "")}<br>
+              Fecha: ${escapar(r.fecha_viaje)}<br>
+              Hora: ${escapar(horaBonita(h?.hora_salida))}<br>
+              Estado: ${escapar(r.estado)}
+            </div>
+
+            ${r.estado === "reservada"
+              ? `<button class="rojo"
+                   onclick="cancelarAdmin(${r.id})">
+                   Cancelar reserva
+                 </button>`
+              : ""}
+          </article>`;
+        }).join("")
+      : '<div class="vacio">No hay reservas registradas.</div>';
+  } catch (error) {
+    console.error("Error administrativo:", error);
+    avisar(
+      error.message ||
+      "No se pudieron cargar las reservas. Revisa las políticas RLS."
+    );
+  }
+}
+
+/* CANCELAR DESDE ADMINISTRACIÓN */
+async function cancelarAdmin(id) {
+  if (!usuario || !perfil || !esAdmin()) {
+    avisar("No tienes permisos de administrador.");
+    return;
+  }
+
+  if (!confirm("¿Cancelar esta reserva?")) return;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("reservas")
+      .update({ estado: "cancelada" })
+      .eq("id", id)
+      .eq("estado", "reservada")
+      .select("id");
+
+    if (error) throw error;
+
+    if (!data || !data.length) {
+      avisar("No se modificó la reserva. Verifica las políticas RLS.");
+      return;
+    }
+
+    await cargarAdministracion();
+    avisar("Reserva cancelada.");
+  } catch (error) {
+    console.error("Error al cancelar desde administración:", error);
+    avisar("No se pudo cancelar la reserva.");
+  }
+}
+
+/* EXPORTAR CSV */
 function exportarCSV() {
-  if (!reservas.length) {
-    avisar("No hay reservas para exportar.");
+  if (!usuario || !perfil || !esAdmin()) {
+    avisar("Solo el administrador puede exportar los datos.");
+    return;
+  }
+
+  if (!reservasAdmin.length) {
+    avisar("Primero actualiza las reservas.");
     return;
   }
 
   const filas = [
-    ["Codigo", "Nombre", "DNI", "Celular", "Origen",
-      "Destino", "Fecha", "Hora", "Estado"],
-    ...reservas.map(r => [
-      r.codigo, r.nombre, r.dni, r.celular,
-      rutas[r.ruta].origen, rutas[r.ruta].destino,
-      r.fecha, r.hora, r.estado
+    ["Código", "Nombre", "DNI de prueba", "Teléfono de prueba",
+     "Fecha", "Estado"],
+
+    ...reservasAdmin.map(r => [
+      r.codigo,
+      r.nombre_pasajero,
+      r.dni,
+      r.telefono,
+      r.fecha_viaje,
+      r.estado
     ])
   ];
 
-  const contenido = "\uFEFF" + filas.map(fila =>
+  const csv = "\uFEFF" + filas.map(fila =>
     fila.map(valor =>
-      '"' + String(valor).replace(/"/g, '""') + '"'
+      '"' + String(valor ?? "").replace(/"/g, '""') + '"'
     ).join(",")
   ).join("\r\n");
 
-  const archivo = new Blob([contenido], {
+  const archivo = new Blob([csv], {
     type: "text/csv;charset=utf-8;"
   });
 
+  const url = URL.createObjectURL(archivo);
   const enlace = document.createElement("a");
-  enlace.href = URL.createObjectURL(archivo);
-  enlace.download = "reservas_pasaje_en_linea.csv";
-  enlace.click();
 
-  URL.revokeObjectURL(enlace.href);
+  enlace.href = url;
+  enlace.download = "reservas_pasaje_en_linea.csv";
+  document.body.appendChild(enlace);
+  enlace.click();
+  enlace.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-function borrarReservas() {
-  if (confirm("¿Deseas borrar todas las reservas de prueba?")) {
-    reservas = [];
-    guardar();
-    avisar("Reservas de prueba eliminadas.");
+/* RECUPERAR SESIÓN AL ABRIR LA PÁGINA */
+async function iniciarApp() {
+  $("fecha").min = fechaLocal();
+  $("fecha").value = fechaLocal();
+  $("fechaConductor").value = fechaLocal();
+
+  try {
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error) throw error;
+
+    if (data.session?.user) {
+      usuario = data.session.user;
+
+      await cargarPerfil();
+
+      if (perfil) {
+        await cargarCatalogos();
+        await cargarMisReservas();
+      }
+    }
+
+    actualizarInterfaz();
+  } catch (error) {
+    console.error("Error al iniciar la aplicación:", error);
+    actualizarInterfaz();
+    avisar(
+      error.message ||
+      "No se pudo conectar. Comprueba la configuración de Supabase."
+    );
   }
 }
 
-function actualizarTodo() {
-  actualizarMisReservas();
-  actualizarChofer();
-  actualizarAdmin();
-}
+/* CAMBIOS DE SESIÓN */
+supabaseClient.auth.onAuthStateChange((evento, sesion) => {
+  if (evento === "SIGNED_OUT" || !sesion) {
+    usuario = null;
+    perfil = null;
+    rutas = [];
+    horarios = [];
+    reservasAdmin = [];
+    actualizarInterfaz();
+  }
+});
 
-actualizarTodo();
+iniciarApp();
 </script>
 
 </body>
