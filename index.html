@@ -188,8 +188,20 @@ tr:last-child td{border-bottom:0}
             <input id="telefono" name="telefono" type="tel" autocomplete="tel" maxlength="25" required placeholder="Tu número de contacto">
           </div>
           <div class="field">
-            <label for="dni">DNI (si corresponde)</label>
-            <input id="dni" name="dni" inputmode="numeric" maxlength="20" placeholder="Opcional">
+            <label for="dni">DNI *</label>
+            <input
+              id="dni"
+              name="dni"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              maxlength="8"
+              minlength="8"
+              pattern="[0-9]{8}"
+              title="El DNI debe contener exactamente 8 números"
+              required
+              placeholder="Ingresa los 8 dígitos de tu DNI"
+            >
           </div>
         </div>
 
@@ -698,7 +710,7 @@ $("ruta").addEventListener("change",updatePublicSchedules);
 $("fecha").addEventListener("change",updatePublicSchedules);
 $("horario").addEventListener("change",loadOccupiedSeats);
 
-/* Registro de reservas públicas con punto de recojo */
+/* Registro de reservas públicas con DNI obligatorio y punto de recojo */
 $("bookingForm").addEventListener("submit",async e=>{
   e.preventDefault();
   hideNotice("publicNotice");
@@ -713,8 +725,22 @@ $("bookingForm").addEventListener("submit",async e=>{
   const pickup = $("puntoRecojo").value;
   const seat = Number(state.selectedSeat);
 
-  if(!name||!email||!phone||!scheduleId||!date||!pickup){
-    notice("publicNotice","Completa los campos obligatorios, incluido el punto de recojo.","err");
+  if(!name||!email||!phone||!dni||!scheduleId||!date||!pickup){
+    notice(
+      "publicNotice",
+      "Completa todos los campos obligatorios, incluido tu DNI y el punto de recojo.",
+      "err"
+    );
+    return;
+  }
+
+  if(!/^[0-9]{8}$/.test(dni)){
+    notice(
+      "publicNotice",
+      "El DNI es obligatorio y debe contener exactamente 8 números.",
+      "err"
+    );
+    $("dni").focus();
     return;
   }
 
@@ -747,7 +773,7 @@ $("bookingForm").addEventListener("submit",async e=>{
       p_nombre:name,
       p_correo:email,
       p_telefono:phone,
-      p_dni:dni||null,
+      p_dni:dni,
       p_horario_id:scheduleId,
       p_fecha_viaje:date,
       p_asiento:seat,
@@ -779,6 +805,7 @@ $("bookingForm").addEventListener("submit",async e=>{
         Punto de recojo: <strong>${safe(savedPickup)}</strong><br>
         Fecha: ${safe(dateText(date))}<br>
         Pasajero: ${safe(name)}<br>
+        DNI: ${safe(dni)}<br>
         Asiento: <strong>${safe(savedSeat)}</strong>
       </p>
       <p>Guarda este código como comprobante de referencia. No se creó una cuenta de pasajero.</p>
