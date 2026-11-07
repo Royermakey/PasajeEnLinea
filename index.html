@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -189,19 +189,7 @@ tr:last-child td{border-bottom:0}
           </div>
           <div class="field">
             <label for="dni">DNI *</label>
-            <input
-              id="dni"
-              name="dni"
-              type="text"
-              inputmode="numeric"
-              autocomplete="off"
-              maxlength="8"
-              minlength="8"
-              pattern="[0-9]{8}"
-              title="El DNI debe contener exactamente 8 números"
-              required
-              placeholder="Ingresa los 8 dígitos de tu DNI"
-            >
+            <input id="dni" name="dni" type="text" inputmode="numeric" autocomplete="off" maxlength="8" minlength="8" pattern="[0-9]{8}" title="El DNI debe contener exactamente 8 números" required placeholder="Ingresa los 8 dígitos de tu DNI">
           </div>
         </div>
 
@@ -218,7 +206,7 @@ tr:last-child td{border-bottom:0}
           </div>
         </div>
 
-        <div class="field">
+        <div class="field" id="pickupField">
           <label for="puntoRecojo">Punto de recojo *</label>
           <select id="puntoRecojo" required>
             <option value="">Selecciona dónde deseas abordar</option>
@@ -387,6 +375,7 @@ tr:last-child td{border-bottom:0}
 
 const SUPABASE_URL = "https://sufkzyrifsckyctfdgia.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Rm__z1NNrrdd8D9X_V7nfA_3RZX-Top";
+
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const $ = id => document.getElementById(id);
 
@@ -422,6 +411,49 @@ const state = {
   booking: false
 };
 
+function normalizarTexto(valor){
+  return String(valor || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
+function esRegreso(route){
+  if(!route) return false;
+
+  return (
+    normalizarTexto(route.origen) === "huamachuco" &&
+    normalizarTexto(route.destino) === "sitabamba"
+  );
+}
+
+/* Punto de recojo automático según la ruta */
+function actualizarPuntoRecojo(){
+  const routeId = $("ruta").value;
+  const route = state.routes.find(
+    r => String(r.id) === String(routeId)
+  );
+
+  const field = $("pickupField");
+  const select = $("puntoRecojo");
+
+  if(esRegreso(route)){
+    field.classList.add("hidden");
+    select.value = "Huamachuco";
+    select.required = false;
+    select.disabled = true;
+  }else{
+    field.classList.remove("hidden");
+    select.disabled = false;
+    select.required = true;
+
+    if(!PUNTOS_RECOJO.includes(select.value)){
+      select.value = "";
+    }
+  }
+}
+
 const todayLocal = () => {
   const d = new Date();
   d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
@@ -433,7 +465,6 @@ $("fecha").value = todayLocal();
 $("driverDate").value = todayLocal();
 $("filterDate").value = "";
 
-/* Cargar los 15 puntos de recojo */
 $("puntoRecojo").innerHTML =
   '<option value="">Selecciona dónde deseas abordar</option>' +
   PUNTOS_RECOJO.map(p =>
@@ -669,6 +700,7 @@ function updatePublicSchedules(){
   const date = $("fecha").value;
   const sel = $("horario");
 
+  actualizarPuntoRecojo();
   resetSeatState();
 
   const matching = state.publicSchedules.filter(
@@ -710,7 +742,7 @@ $("ruta").addEventListener("change",updatePublicSchedules);
 $("fecha").addEventListener("change",updatePublicSchedules);
 $("horario").addEventListener("change",loadOccupiedSeats);
 
-/* Registro de reservas públicas con DNI obligatorio y punto de recojo */
+/* Registro de reservas públicas */
 $("bookingForm").addEventListener("submit",async e=>{
   e.preventDefault();
   hideNotice("publicNotice");
@@ -722,7 +754,21 @@ $("bookingForm").addEventListener("submit",async e=>{
   const dni = $("dni").value.trim();
   const scheduleId = Number($("horario").value);
   const date = $("fecha").value;
-  const pickup = $("puntoRecojo").value;
+
+  const selectedRoute = state.routes.find(
+    r => String(r.id) === String($("ruta").value)
+  );
+
+  const isReturnRoute = esRegreso(selectedRoute);
+
+  /* CORRECCIÓN: Huamachuco es el punto de recojo del viaje de regreso */
+  let pickup = $("puntoRecojo").value;
+
+  if(isReturnRoute){
+    pickup = "Huamachuco";
+    $("puntoRecojo").value = pickup;
+  }
+
   const seat = Number(state.selectedSeat);
 
   if(!name||!email||!phone||!dni||!scheduleId||!date||!pickup){
@@ -744,7 +790,8 @@ $("bookingForm").addEventListener("submit",async e=>{
     return;
   }
 
-  if(!PUNTOS_RECOJO.includes(pickup)){
+  /* Solo se valida contra los 15 puntos para la ruta de ida */
+  if(!isReturnRoute && !PUNTOS_RECOJO.includes(pickup)){
     notice("publicNotice","Selecciona un punto de recojo válido.","err");
     return;
   }
@@ -1217,7 +1264,7 @@ $("refreshButton").addEventListener("click",async()=>{
   $(id).addEventListener("input",renderReservations);
 });
 
-/* Exportación CSV para Excel: incluye punto de recojo */
+/* Exportación CSV para Excel */
 $("exportButton").addEventListener("click",()=>{
   const rows = filteredReservations();
 
@@ -1314,4 +1361,3 @@ db.auth.getSession().then(async({data})=>{
 </script>
 </body>
 </html>
-```
